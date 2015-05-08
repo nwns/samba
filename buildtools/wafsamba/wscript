@@ -213,6 +213,8 @@ def configure(conf):
 
     conf.CHECK_STANDARD_LIBPATH()
 
+    conf.ADD_CFLAGS('--std=c99', testflags=True)
+
     # we need git for 'waf dist'
     conf.find_program('git', var='GIT')
 
