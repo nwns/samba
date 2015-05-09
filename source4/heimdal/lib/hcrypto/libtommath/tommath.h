@@ -23,6 +23,12 @@
 
 #include <tommath_class.h>
 
+/* Many systems define ERR as some number and the tommath
+ * libary uses it for flow control without protection. */
+#ifdef ERR
+#undef ERR
+#endif
+
 #ifndef MIN
    #define MIN(x,y) ((x)<(y)?(x):(y))
 #endif
