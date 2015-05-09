@@ -243,12 +243,6 @@ struct nwrap_libc_fns {
 				 char *serv, size_t servlen,
 				 int flags);
 	int (*_libc_gethostname)(char *name, size_t len);
-#ifdef HAVE_GETHOSTBYNAME_R
-	int (*_libc_gethostbyname_r)(const char *name,
-				     struct hostent *ret,
-				     char *buf, size_t buflen,
-				     struct hostent **result, int *h_errnop);
-#endif
 #ifdef HAVE_GETHOSTBYADDR_R
 	int (*_libc_gethostbyaddr_r)(const void *addr, socklen_t len, int type,
 				     struct hostent *ret,
@@ -961,25 +955,6 @@ static int libc_gethostname(char *name, size_t len)
 
 	return nwrap_main_global->libc->fns->_libc_gethostname(name, len);
 }
-
-#ifdef HAVE_GETHOSTBYNAME_R
-static int libc_gethostbyname_r(const char *name,
-				struct hostent *ret,
-				char *buf,
-				size_t buflen,
-				struct hostent **result,
-				int *h_errnop)
-{
-	nwrap_load_lib_function(NWRAP_LIBNSL, gethostbyname_r);
-
-	return nwrap_main_global->libc->fns->_libc_gethostbyname_r(name,
-								   ret,
-								   buf,
-								   buflen,
-								   result,
-								   h_errnop);
-}
-#endif
 
 #ifdef HAVE_GETHOSTBYADDR_R
 static int libc_gethostbyaddr_r(const void *addr,
@@ -2384,41 +2359,6 @@ static struct hostent *nwrap_files_gethostbyname(const char *name, int af)
 	errno = ENOENT;
 	return NULL;
 }
-
-#ifdef HAVE_GETHOSTBYNAME_R
-static int nwrap_gethostbyname_r(const char *name,
-				 struct hostent *ret,
-				 char *buf, size_t buflen,
-				 struct hostent **result, int *h_errnop)
-{
-	*result = nwrap_files_gethostbyname(name, AF_UNSPEC);
-	if (*result != NULL) {
-		memset(buf, '\0', buflen);
-		*ret = **result;
-		return 0;
-	} else {
-		*h_errnop = h_errno;
-		return -1;
-	}
-}
-
-int gethostbyname_r(const char *name,
-		    struct hostent *ret,
-		    char *buf, size_t buflen,
-		    struct hostent **result, int *h_errnop)
-{
-	if (!nss_wrapper_hosts_enabled()) {
-		return libc_gethostbyname_r(name,
-					    ret,
-					    buf,
-					    buflen,
-					    result,
-					    h_errnop);
-	}
-
-	return nwrap_gethostbyname_r(name, ret, buf, buflen, result, h_errnop);
-}
-#endif
 
 static struct hostent *nwrap_files_gethostbyaddr(const void *addr,
 						 socklen_t len, int type)

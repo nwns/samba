@@ -38,7 +38,7 @@ if conf.CHECK_FUNCS('strerror_r'):
 conf.CHECK_FUNCS_IN('hstrerror', 'resolv socket nsl', checklibc=True)
 conf.CHECK_FUNCS_IN('''getnameinfo sendmsg socket getipnodebyname gethostent gethostent_r
                        sethostent endhostent getipnodebyaddr freehostent gethostbyname
-                       gethostbyname_r gethostbyaddr''',
+                       gethostbyaddr''',
                     'socket nsl',
                     checklibc=True)
 
