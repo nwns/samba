@@ -69,10 +69,26 @@
 #include <dlfcn.h>
 
 #if defined(HAVE_NSS_H)
-/* Linux and BSD */
+/* Linux and BSD and Illumos */
 #include <nss.h>
 
+#if defined(nss_status)
 typedef enum nss_status NSS_STATUS;
+#else
+typedef nss_status_t NSS_STATUS;
+#endif
+# if !defined(NSS_STATUS_SUCCESS)
+#  define NSS_STATUS_SUCCESS     NSS_SUCCESS
+# endif
+# if !defined(NSS_STATUS_NOTFOUND)
+#  define NSS_STATUS_NOTFOUND    NSS_NOTFOUND
+# endif
+# if !defined(NSS_STATUS_UNAVAIL)
+#  define NSS_STATUS_UNAVAIL     NSS_UNAVAIL
+# endif
+# if !defined(NSS_STATUS_TRYAGAIN)
+#  define NSS_STATUS_TRYAGAIN    NSS_TRYAGAIN
+# endif
 #elif defined(HAVE_NSS_COMMON_H)
 /* Solaris */
 #include <nss_common.h>
