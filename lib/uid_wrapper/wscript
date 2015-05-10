@@ -55,7 +55,10 @@ def configure(conf):
 			define='HAVE_SETGROUPS_INT', headers='unistd.h sys/types.h')
 	conf.CHECK_C_PROTOTYPE('syscall',
 			'int syscall(int number, ...)',
-			define='HAVE_SYSCALL_INT', headers='unistd.h sys/syscall.h')
+			define='HAVE_SYSCALL_INT_INT', headers='unistd.h sys/syscall.h')
+	conf.CHECK_C_PROTOTYPE('syscall',
+			'long syscall(int number, ...)',
+			define='HAVE_SYSCALL_LONG_INT', headers='unistd.h sys/syscall.h')
 
         # Create full path to uid_wrapper
         srcdir = os.path.realpath(conf.srcdir)
