@@ -28,6 +28,7 @@
 #ifdef HAVE_INOTIFY
 
 #include <sys/inotify.h>
+#include <sys/filio.h>
 
 /* glibc < 2.5 headers don't have these defines */
 #ifndef IN_ONLYDIR
